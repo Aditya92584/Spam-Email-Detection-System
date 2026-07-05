@@ -46,7 +46,6 @@ Aapka model highly optimized hai aur tests me isne outstanding results diye hain
   Precision     |  100% (1.0)  |  🔥 Production Ready
 =====================================================
 
----
 
 ## 🧠 Model Architecture & Mathematical Blueprint
 
