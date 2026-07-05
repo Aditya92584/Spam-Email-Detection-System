@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Spam Analytics Shield</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary-accent: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg-gradient); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .dashboard { background: var(--panel-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 24px; width: 100%; max-width: 1000px; display: grid; grid-template-columns: 1.2fr 0.8fr; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .workspace { padding: 40px; border-right: 1px solid var(--border-color); }
+        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+        .brand i { color: var(--primary-accent); font-size: 24px; }
+        .brand h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+        
+        .brand span { 
+            background: linear-gradient(to right, #818cf8, #c084fc); 
+            background-clip: text;
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-secondary); margin-bottom: 10px; }
+        textarea { width: 100%; height: 220px; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; color: var(--text-primary); font-size: 15px; line-height: 1.6; resize: none; outline: none; transition: all 0.3s ease; }
+        textarea:focus { border-color: var(--primary-accent); box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
+        .btn-analyze { background: var(--primary-accent); color: white; border: none; padding: 16px 24px; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease; }
+        .btn-analyze:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        
+        .analytics { padding: 40px; background: rgba(15, 23, 42, 0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; }
+        .status-shield { width: 100px; height: 100px; border-radius: 50%; background: rgba(255, 255, 255, 0.03); border: 2px dashed var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--text-secondary); margin-bottom: 24px; }
+        .meta-box { background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 20px; font-size: 13px; color: var(--text-secondary); margin-top: 30px; display: flex; gap: 15px; }
+        
+        .state-loading .status-shield { border-color: var(--primary-accent); color: var(--primary-accent); animation: spin 2s linear infinite; }
+        .state-spam .status-shield { background: rgba(239, 68, 68, 0.1); border: 2px solid var(--danger); color: var(--danger); }
+        .state-ham .status-shield { background: rgba(16, 185, 129, 0.1); border: 2px solid var(--success); color: var(--success); }
+        .result-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .result-desc { font-size: 14px; color: var(--text-secondary); max-width: 220px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } .workspace { border-right: none; border-bottom: 1px solid var(--border-color); } }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="workspace">
+        <div class="brand">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h1>Spam Shield <span>Engine</span></h1>
+        </div>
+        <div class="input-group">
+            <label for="emailText">Raw Text Input String</label>
+            <textarea id="emailText" placeholder="Paste your suspicious text here..."></textarea>
+        </div>
+        <button class="btn-analyze" onclick="processAnalysis()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Run Classification Engine
+        </button>
+    </div>
+
+    <div class="analytics" id="analyticsPanel">
+        <div class="status-shield" id="shieldIcon">
+            <i class="fa-solid fa-circle-notch fa-spin" style="display:none;" id="loaderSpinner"></i>
+            <i class="fa-solid fa-fingerprint" id="defaultIcon"></i>
+        </div>
+        <div class="result-title" id="resTitle">System Idle</div>
+        <div class="result-desc" id="resDesc">Awaiting text payload ingestion to run diagnostic evaluation.</div>
+        
+        <div class="meta-box">
+            <span><i class="fa-solid fa-microchip"></i> Naive Bayes</span>
+            <span><i class="fa-solid fa-bullseye"></i> Prec: 1.0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function processAnalysis() {
+        const text = document.getElementById('emailText').value;
+        const panel = document.getElementById('analyticsPanel');
+        const shield = document.getElementById('shieldIcon');
+        const title = document.getElementById('resTitle');
+        const desc = document.getElementById('resDesc');
+
+        if (!text.trim()) {
+            title.innerText = "Empty Payload";
+            title.style.color = "var(--text-primary)";
+            desc.innerText = "Please provide string parameters before initializing.";
+            return;
+        }
+
+        // Loading State trigger karein
+        shield.innerHTML = '<i class="fa-solid fa-circle-notch"></i>';
+        panel.className = "analytics state-loading";
+        title.innerText = "Analyzing Content...";
+        title.style.color = "var(--primary-accent)";
+        desc.innerText = "Executing NLP vector tokenization...";
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: text })
+            });
+            const data = await response.json();
+            
+            if(data.prediction === "Spam") {
+                panel.className = "analytics state-spam";
+                shield.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                title.innerText = "Spam Detected";
+                title.style.color = "var(--danger)";
+                desc.innerText = "High threat signature recognized. Discard immediately.";
+            } else {
+                panel.className = "analytics state-ham";
+                shield.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                title.innerText = "Verified Safe";
+                title.style.color = "var(--success)";
+                desc.innerText = "Clean footprint verified. Safe for inbox delivery.";
+            }
+        } catch (error) {
+            panel.className = "analytics";
+            shield.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+            title.innerText = "Connection Refused";
+            title.style.color = "var(--danger)";
+            desc.innerText = "Unable to interface with core Flask backend.";
+        }
+    }
+</script>
+
+</body>
+</html>
