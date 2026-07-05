@@ -33,18 +33,10 @@ During the data analysis phase, explicit feature engineering was executed to ana
 
 ## 📊 Model Performance Metrics
 
-Aapka model highly optimized hai aur tests me isne outstanding results diye hain:
+The model is highly optimized and has delivered outstanding results during rigorous evaluation:
 
-* **Accuracy Score:** `0.9709` (**97.1%**) — High overall correctness across unseen evaluation data.
-* **Precision Score:** `1.0000` (**100%**) — Zero false-positive rate. This ensures that legitimate personal or transactional communication is never wrongly flagged as Spam.
-
-```text
-=====================================================
-  METRIC        |  CORE VALUE  |  STATUS
-=====================================================
-  Accuracy      |  97.1%       |  🏆 Optimal
-  Precision     |  100% (1.0)  |  🔥 Production Ready
-=====================================================
+- **Accuracy Score:** 0.9709 (~97.1%) — Demonstrates high overall correctness across unseen evaluation datasets.
+- **Precision Score:** 1.0000 (100%) — Achieved a zero false-positive rate. This guarantees that legitimate personal or transactional communications are never incorrectly flagged as spam.
 
 
 ## 🧠 Model Architecture & Mathematical Blueprint
